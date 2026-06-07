@@ -1,6 +1,6 @@
 {
   "scan_root": "C:/Users/mdsad/PycharmProjects",
-  "hub_port": 7794,
+  "hub_port": 7777,
   "auto_start": false,
   "projects": {
     "AskAExpert": {
@@ -24,50 +24,6 @@
         "ai"
       ]
     },
-    "DomainOS": {
-      "enabled": true,
-      "type": "node-fullstack",
-      "path": "C:/Users/mdsad/PycharmProjects/DomainOS",
-      "description": "DomainOS real-time classroom operating system with PIN auth, slides, quizzes, and WebSockets",
-      "icon": "DO",
-      "color": "#10b981",
-      "command": "npm start",
-      "cwd": "C:/Users/mdsad/PycharmProjects/DomainOS/backend",
-      "port": 8080,
-      "url": "http://localhost:8080/",
-      "entry": "frontend/index.html",
-      "env": {
-        "DOMAINOS_PORT": "8080"
-      },
-      "tags": [
-        "education",
-        "realtime",
-        "websocket",
-        "classroom"
-      ]
-    },
-    "EduCoreAI": {
-      "enabled": true,
-      "type": "nextjs",
-      "path": "C:/Users/mdsad/PycharmProjects/EduCoreAI",
-      "description": "SuperAgent+ - Multi-AI coding workspace (Codex, Claude, Gemini, DeepSeek, Qwen, Mistral, Cerebras)",
-      "icon": "EC",
-      "color": "#a855f7",
-      "command": "npm run dev",
-      "cwd": "C:/Users/mdsad/PycharmProjects/EduCoreAI/frontend",
-      "port": 3001,
-      "url": "http://localhost:3001/",
-      "entry": "frontend/app",
-      "env": {
-        "PORT": "3001"
-      },
-      "tags": [
-        "ai",
-        "nextjs",
-        "coding",
-        "ensemble"
-      ]
-    },
     "Minceraft+": {
       "enabled": true,
       "type": "node",
@@ -77,11 +33,11 @@
       "color": "#f97316",
       "command": "npm start",
       "cwd": "C:/Users/mdsad/PycharmProjects/Minceraft+/game-server",
-      "port": 3002,
-      "url": "http://localhost:3002/",
+      "port": 3001,
+      "url": "http://localhost:3001/",
       "entry": "game-server/public/index.html",
       "env": {
-        "PORT": "3002"
+        "PORT": "3001"
       },
       "tags": [
         "games",
