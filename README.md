@@ -1,95 +1,36 @@
 # This Is Ultishayaan
 
-A zero-dependency dashboard that lives next to your local web projects and lets you start, stop, preview, and tail logs for each one from a single browser tab.
+A minimal static landing page with links to my web projects.
 
 ```
-+---------------------------+-----------------------------------------+
-|  This Is Ultishayaan      |  AskAExpert                            |
-|  scan: ~/PycharmProjects  |  [Start] [Open] [Stop] [Install]        |
-|  [search]                 |                                         |
-|  • AskAExpert    running  |  Preview | Live Log | Files              |
-|  • Minceraft+    stopped  |  ┌─────────────────────────────────┐    |
-|                           |  │   live preview iframe           │    |
-|                           |  │                                 │    |
-|                           |  └─────────────────────────────────┘    |
-+---------------------------+-----------------------------------------+
++---------------------------+
+|  This Is Ultishayaan      |
+|                           |
+|  [ AskAExpert ]           |
+|  [ Minceraft+ ]           |
+|  [ GitHub ]               |
++---------------------------+
 ```
+
+## Projects
+
+| Name | Description | Runs on |
+|------|-------------|---------|
+| **AskAExpert** | Teacher-Student Q&A with Socket.IO + AI cheat answers | `localhost:3000/teacher.html` |
+| **Minceraft+** | GameHub LAN — Among Us, Minecraft, party games | `localhost:3001/` |
+
+> Skipped: **DomainOS** (classroom OS, native/kiosk) and **EduCoreAI** (standalone `.exe` at `dist/SuperAgent+.exe`).
 
 ## Run it
 
+Just open `index.html` in a browser, or serve it:
+
 ```powershell
+# Quick serve (Python)
 cd ThisIsUltishayaan
-python app.py
+python -m http.server 7777
 ```
 
-or double-click `start.bat`.
+Then open <http://localhost:7777/>.
 
-The dashboard opens at <http://localhost:7777/> (auto-opens your default browser). The port can be changed in `projects.json` or with `--port`.
-
-No npm, no pip install. Pure Python standard library.
-
-## Features
-
-- **Auto-detects** every web project under the configured scan root.
-- **Start / Stop / Install** each project from the sidebar.
-- **Live preview** inside an embedded iframe (open in a new tab or fullscreen).
-- **Live log tail** using Server-Sent Events.
-- **Per-project log file** under `logs/<name>.log`.
-- **Search** the project list, **dark/light** theme, **auto-refresh** status polling.
-- **Multi-project safe**: ports are configured per project in `projects.json` to avoid collisions.
-
-## Tracked projects
-
-| Name       | Type            | Port | Folder                                              |
-| ---------- | --------------- | ---- | --------------------------------------------------- |
-| AskAExpert | Node + Socket.IO| 3000 | `~/PycharmProjects/AskAExpert`                      |
-| Minceraft+ | Node + Socket.IO| 3001 | `~/PycharmProjects/Minceraft+/game-server`          |
-
-> Skipped on purpose:
-> - **DomainOS** is a classroom operating system (kiosk / desktop / native ISO), not a web project.
-> - **EduCoreAI (SuperAgent+)** ships a standalone Windows app at `dist\SuperAgent+.exe` that requires no Python or Node. The web build is just a development surface.
-
-## Customising
-
-Edit `projects.json` to add/remove projects, change ports, set environment variables, or pin a specific start command. Paths in the config may use `~` for the home directory and `$VAR` / `%VAR%` for environment variables, so the file stays portable.
-
-Only the projects listed under `projects` are exposed in the sidebar. The **Rescan** button in the sidebar re-detects everything in the scan root for inspiration, but does not auto-add them to the hub.
-
-Each project entry supports:
-
-```json
-{
-  "MyApp": {
-    "enabled": true,
-    "type": "node",
-    "path": "~/PycharmProjects/MyApp",
-    "description": "What it does",
-    "icon": "MA",
-    "color": "#3b82f6",
-    "command": "npm start",
-    "cwd": "~/PycharmProjects/MyApp",
-    "port": 3000,
-    "url": "http://localhost:3000/",
-    "entry": "public/index.html",
-    "env": { "NODE_ENV": "development" },
-    "tags": ["api", "realtime"]
-  }
-}
-```
-
-`extra_entry` may also be added for projects that have multiple HTML entry points (e.g. teacher + student views) — visible in the preview toolbar.
-
-## Notes
-
-- `Start` runs the configured `command` from the project's `cwd` and streams stdout/stderr to the log panel and the `logs/<name>.log` file.
-- `Install` runs `npm install` first (only honored when the command starts with `npm `) — useful for fresh clones.
-- `Stop` uses `taskkill /T /F` on Windows to terminate the whole process tree.
-- Iframes are sandboxed but allow same-origin, scripts, forms, and popups so previews work normally. If a project refuses to load inside the iframe (e.g. sets `X-Frame-Options: DENY`), use the **Open** button to launch it in a real tab.
-- The hub's own port (default 7777) is saved into `projects.json` on each launch so the auto-opened browser tab lands on the correct URL.
-
-## Files
-
-- `app.py` — the entire backend (HTTP server, project runner, log streaming).
-- `static/index.html` `static/style.css` `static/app.js` — the dashboard.
-- `projects.json` — your project list and hub settings.
-- `logs/*.log` — per-project output history.
+No build, no dependencies, no launcher — just a page with buttons.
