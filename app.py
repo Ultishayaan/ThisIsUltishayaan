@@ -1,5 +1,5 @@
 """
-PyCharm Projects Hub - a zero-dependency launcher for all local web projects.
+This Is Ultishayaan - a zero-dependency dashboard for all local web projects.
 
 Usage:
     python app.py
@@ -35,28 +35,52 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 
 # ---------- Config ----------
 
+# `~` is expanded with os.path.expanduser at load time so the config file
+# stays portable and does not embed a personal home directory.
+DEFAULT_SCAN_ROOT = os.path.expanduser("~/PycharmProjects")
+
 DEFAULT_CONFIG = {
-    "scan_root": "C:/Users/mdsad/PycharmProjects",
+    "scan_root": DEFAULT_SCAN_ROOT,
     "hub_port": 7777,
     "auto_start": False,
     "projects": {},
 }
 
 
+def expand_path(value):
+    """Expand ~ and environment variables in a path string."""
+    if not isinstance(value, str):
+        return value
+    return os.path.expandvars(os.path.expanduser(value))
+
+
 def load_config():
     if not os.path.exists(CONFIG_PATH):
         save_config(DEFAULT_CONFIG)
-        return dict(DEFAULT_CONFIG)
+        return _normalize_paths(dict(DEFAULT_CONFIG))
     try:
         with open(CONFIG_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
         merged = dict(DEFAULT_CONFIG)
         merged.update(data)
         merged["projects"] = data.get("projects", {}) or {}
-        return merged
+        return _normalize_paths(merged)
     except (json.JSONDecodeError, OSError) as exc:
         print(f"[hub] Could not read projects.json ({exc}); using defaults", file=sys.stderr)
-        return dict(DEFAULT_CONFIG)
+        return _normalize_paths(dict(DEFAULT_CONFIG))
+
+
+def _normalize_paths(cfg):
+    """Expand ~ and env vars in any user-supplied paths."""
+    if "scan_root" in cfg:
+        cfg["scan_root"] = expand_path(cfg["scan_root"])
+    for proj in cfg.get("projects", {}).values():
+        for key in ("path", "cwd", "entry"):
+            if proj.get(key):
+                proj[key] = expand_path(proj[key])
+        if isinstance(proj.get("env"), dict):
+            proj["env"] = {k: expand_path(v) if isinstance(v, str) else v for k, v in proj["env"].items()}
+    return cfg
 
 
 def save_config(cfg):
@@ -691,7 +715,7 @@ def serve_static(handler, rel_path):
 
 
 class HubHandler(BaseHTTPRequestHandler):
-    server_version = "PyCharmHub/1.0"
+    server_version = "UltishayaanHub/1.0"
 
     # Silence default access logs (we use a custom one).
     def log_message(self, format, *args):
@@ -871,7 +895,7 @@ def find_free_port(preferred):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PyCharm Projects Hub")
+    parser = argparse.ArgumentParser(description="This Is Ultishayaan - local projects dashboard")
     parser.add_argument("--port", type=int, default=None, help="Port for the hub UI (default from projects.json or 7777)")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind (default 0.0.0.0)")
     parser.add_argument("--no-browser", action="store_true", help="Do not auto-open the dashboard")
@@ -882,14 +906,22 @@ def main():
         STATE.config["scan_root"] = args.scan_root
     preferred = args.port or int(STATE.config.get("hub_port") or 7777)
     port = find_free_port(preferred)
-    STATE.config["hub_port"] = port
-    save_config(STATE.config)
+    # Only persist the port - paths stay in their original ~/ form so the
+    # config file remains portable.
+    try:
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+            on_disk = json.load(f)
+        on_disk["hub_port"] = port
+        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+            json.dump(on_disk, f, indent=2)
+    except (OSError, json.JSONDecodeError):
+        pass
 
     server = ThreadedHTTPServer((args.host, port), HubHandler)
 
     url = f"http://localhost:{port}/"
     print("=" * 64)
-    print(f"  PyCharm Projects Hub")
+    print(f"  This Is Ultishayaan")
     print(f"  Open:      {url}")
     print(f"  Scan root: {STATE.config.get('scan_root')}")
     print(f"  Logs:      {LOGS_DIR}")
