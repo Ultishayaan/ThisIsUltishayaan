@@ -14,9 +14,9 @@ A minimal static landing page with links to my web projects.
 
 ## Projects
 
-| Name | Description | Runs on |
-|------|-------------|---------|
-| **AskAExpert** | Teacher-Student Q&A with Socket.IO + AI cheat answers | `localhost:3000/teacher.html` |
+| Name | Description | URL |
+|------|-------------|-----|
+| **Explosive Education** | Teacher-Student Q&A with Socket.IO + AI cheat answers | <https://explosiveeducation.onrender.com> |
 | **Minceraft+** | GameHub LAN — Among Us, Minecraft, party games | `localhost:3001/` |
 
 > Skipped: **DomainOS** (classroom OS, native/kiosk) and **EduCoreAI** (standalone `.exe` at `dist/SuperAgent+.exe`).
